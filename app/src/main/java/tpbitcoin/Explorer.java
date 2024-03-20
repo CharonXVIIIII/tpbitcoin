@@ -1,5 +1,7 @@
 package tpbitcoin;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.bitcoinj.core.*;
 
 import java.io.IOException;
@@ -47,7 +49,7 @@ public class Explorer {
     }
 
 
-        /**
+    /**
      * Current reward for mining a block
      * @return current reward for mining a block in BTC
      */
@@ -68,31 +70,38 @@ public class Explorer {
 
     // TODO
     public String getLatestHash(){
-        return "";
+        String response = request("latestblock");
+        JsonObject jsonObject = JsonParser.parseString(response).getAsJsonObject();
+        return jsonObject.get("hash").getAsString();
     }
 
 
-    // TODO 
+
+
+    // TODO
     /**
      * Return the raw bytes of the block whose hash is given as argument
      * @param hash of a valid block contained in bitcoin mainnet
      * @return byte array encoding the block
      */
     public byte[] getRawblockFromHash(String hash){
-        return null;
+        String answer = request("rawblock/" + hash + "?format=hex");
+        return hexStringToByte(answer);
     }
+
 
     // TODO
     /**
      * Create an instance of bitcoinj.core.Block that correspond to the block
      * whose hash is given.
      * @param params : NetworkParameters of the blockchain
-     * @param hash : a valid hash of a block 
-     * @return  instance of bitcoinj.core.Block representing the block with given hash 
+     * @param hash : a valid hash of a block
+     * @return  instance of bitcoinj.core.Block representing the block with given hash
      */
-	
+
     public Block getBlockFromHash(NetworkParameters params, String hash){
-        return null;
+        byte[] rawblock = getRawblockFromHash(hash);
+        return fromRawblockToBlock(params, rawblock);
     }
 
 

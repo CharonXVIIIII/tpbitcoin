@@ -13,23 +13,29 @@ public class HashRateEstimator {
     private final int duration; //duration of each experience, in milliseconds
     private final int numberOfTries; // number of experience
 
-    /** Create a new object for estimating the number of SHA256 hashs the host can perform per second
-    ** @param duration: (milli-seconds) duration of each experiment
-     * @param numberOfTries : number of experiments to run
-     */
     public HashRateEstimator(int duration, int numberOfTries) {
         this.duration = duration;
         this.numberOfTries = numberOfTries;
     }
 
-    /**
-     * @return : return the hashrate (hash/second)
-     */
-    public double estimate(){
-        byte[] bytes;
+    public double estimate() {
+        long hashCount = 0;
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + duration;
         MessageDigest md = Sha256Hash.newDigest();
-        // TODO
-        return 0.0;
+        Random random = new Random();
+        byte[] bytes = new byte[32];
+
+        while (System.currentTimeMillis() < endTime) {
+            random.nextBytes(bytes);
+            md.update(bytes);
+            hashCount++;
+        }
+
+        long durationSeconds = (endTime - startTime) / 1000;
+        if (durationSeconds == 0) return 0.0;
+        return (double) hashCount / durationSeconds;
     }
+
 
 }

@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.bitcoinj.core.*;
 import org.bitcoinj.params.UnitTestParams;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -28,10 +27,19 @@ public class App {
 
         //Q1  hashrate
         double localHashrate = new HashRateEstimator(5000,5).estimate();
+        System.out.println("Local hashrate: "+localHashrate);
 
         // Q2: latest  block  from mainet (bitcoin blockchain) and its predecessor
-        Context context   = new Context(new UnitTestParams()); // required  for working with bitcoinj
-        Explorer explorer = new Explorer(); // for interacting with blockchain.info API
+        Context context = new Context(new UnitTestParams());
+        Explorer explorer = new Explorer();
+        String latestBlockHash = explorer.getLatestHash();
+        Block latestBlock = explorer.getBlockFromHash(context.getParams(), latestBlockHash);
+
+        System.out.println("Latest block hash: " + latestBlockHash);
+        System.out.println("Nonce: " + latestBlock.getNonce());
+        System.out.println("Difficulty Target (bits): " + latestBlock.getDifficultyTarget());
+        System.out.println("Difficulty Target (as BigInteger): " + Utils.decodeCompactBits(latestBlock.getDifficultyTarget()));
+
         // Q3 Some TXs
 
         // Q4 Mine a new block
