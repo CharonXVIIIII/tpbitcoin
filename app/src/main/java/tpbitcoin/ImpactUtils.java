@@ -16,8 +16,19 @@ public class ImpactUtils {
      */
     // TODO
     public static long expectedMiningTime(long hashrate, BigInteger difficultyAsInteger){
-        return 1L ;
+        BigInteger hashrateToBigInt = BigInteger.valueOf(hashrate);
+        BigInteger twoPower32 = BigInteger.valueOf(2).pow(32);
+        BigInteger numerator = twoPower32.multiply(difficultyAsInteger);
+        BigInteger expectedTimeBigInt = numerator.divide(hashrateToBigInt);
+        return expectedTimeBigInt.longValue();
     }
+
+    public static double expectedYearsToMineABlock(long hashrate, BigInteger difficultyAsInteger) {
+        long seconds = expectedMiningTime(hashrate, difficultyAsInteger);
+        return seconds / (60.0 * 60 * 24 * 365.25);
+    }
+
+
 
     /**
      * Compute the total hashrate of the network given current difficulty level
